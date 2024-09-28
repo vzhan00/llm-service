@@ -2,6 +2,7 @@ package infrastructure
 
 import (
 	"context"
+	"fmt"
 	"os"
 
 	"github.com/google/generative-ai-go/genai"
@@ -38,13 +39,14 @@ func NewLargeLanguageModelAdapter() *LargeLanguageModelAdapter {
 	}
 }
 
-func (adapter *LargeLanguageModelAdapter) GenerateContent(prompt *string) *genai.GenerateContentResponse {
+func (adapter *LargeLanguageModelAdapter) GenerateContent(prompt *string) (*genai.GenerateContentResponse, error) {
 	logger.Log.Info("Attempting to generate content from LLM - LargeLanguageModelAdapter")
 	
 	response, err := adapter.modelClient.GenerateContent(*adapter.context, genai.Text(*prompt))
 
 	if err != nil {
 		logger.Log.Error("Failed to generate content from LLM: ", err)
+		return nil, fmt.Errorf("generating llm content failed: %w", err)
 	}
 
 	if len(response.Candidates) == 0 {
@@ -55,5 +57,5 @@ func (adapter *LargeLanguageModelAdapter) GenerateContent(prompt *string) *genai
 	}
 
 	logger.Log.Info("Generated content from LLM - LargeLanguageModelAdapter")
-	return response
+	return response, nil
 }

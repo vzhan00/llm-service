@@ -9,7 +9,7 @@ import (
 func NewMovieRecommendationRouter(movieRecommendationHandler *MovieRecommendationHandler) http.Handler {
 	router := chi.NewRouter()
 
-	router.Get("/", movieRecommendationHandler.GetMovieRecommendations)
+	router.Post("/", movieRecommendationHandler.GetMovieRecommendations)
 
 	return router
 }

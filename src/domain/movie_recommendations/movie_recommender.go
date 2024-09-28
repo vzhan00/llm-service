@@ -1,5 +1,5 @@
 package movierecommendations
 
 type MovieRecommender interface {
-	GetMovieRecommendations() *[]MovieRecommendation
+	GetMovieRecommendations(prompt string) (*[]MovieRecommendation, error)
 }

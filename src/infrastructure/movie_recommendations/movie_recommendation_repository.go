@@ -1,27 +1,32 @@
 package movierecommendations
 
 import (
+	"fmt"
+
 	"github.com/vzhan00/llm-service/logger"
-	domain "github.com/vzhan00/llm-service/src/domain/movie_recommendations"
-	infra "github.com/vzhan00/llm-service/src/infrastructure"
+	moviedomain "github.com/vzhan00/llm-service/src/domain/movie_recommendations"
+	movieinfra "github.com/vzhan00/llm-service/src/infrastructure"
 )
 
 // Inherits MovieRecommender
 type CastleMovieRecommender struct {
-	largeLanguageModelAdapter *infra.LargeLanguageModelAdapter
+	largeLanguageModelAdapter *movieinfra.LargeLanguageModelAdapter
 }
 
-func NewCastleMovieRecommender(largeLanguageModelAdapter *infra.LargeLanguageModelAdapter) *CastleMovieRecommender {
+func NewCastleMovieRecommender(largeLanguageModelAdapter *movieinfra.LargeLanguageModelAdapter) *CastleMovieRecommender {
 	return &CastleMovieRecommender{
 		largeLanguageModelAdapter: largeLanguageModelAdapter,
 	}
 }
 
-func (recommender *CastleMovieRecommender) GetMovieRecommendations() *[]domain.MovieRecommendation {
+func (recommender *CastleMovieRecommender) GetMovieRecommendations(prompt string) (*[]moviedomain.MovieRecommendation, error) {
 	logger.Log.Info("Getting movie recommendations - CastleMovieRecommender")
-	prompt := "tell colin hes stupid"
-	response := recommender.largeLanguageModelAdapter.GenerateContent(&prompt)
+	response, err := recommender.largeLanguageModelAdapter.GenerateContent(&prompt)
+	if err != nil {
+		logger.Log.Error("Castle movie recommender failed to generate LLM recommendations: ", err)
+		return nil, fmt.Errorf("castle movie recommender failed to generate llm recommendations: %w", err)
+	}
 
 	logger.Log.Info(*response.Candidates[0].Content)
-	return &[]domain.MovieRecommendation{}
+	return &[]moviedomain.MovieRecommendation{}, nil
 }
