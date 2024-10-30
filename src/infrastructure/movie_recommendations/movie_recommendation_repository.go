@@ -24,7 +24,7 @@ func (recommender *CastleMovieRecommender) GetMovieRecommendations(prompt string
 	response, err := recommender.largeLanguageModelAdapter.GenerateContent(&prompt)
 	if err != nil {
 		logger.Log.Error("Castle movie recommender failed to generate LLM recommendations: ", err)
-		return nil, fmt.Errorf("castle movie recommender failed to generate llm recommendations: %w", err)
+		return nil, fmt.Errorf("castle movie recommender failed to generate LLM recommendations: %w", err)
 	}
 
 	logger.Log.Info(*response.Candidates[0].Content)
